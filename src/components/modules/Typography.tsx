@@ -8,20 +8,28 @@ export const SpanTypography = styled((props: TypographyProps) => (
 ))(() => ({}));
 
 export const BoldTypography = styled(Typography)(() => ({
-  fontWeight: 'bold'
+  fontWeight: 600
 }));
 
-export const BoldGray9Typography = styled(BoldTypography)(() => ({
-  color: '#333'
+export const BoldGray9Typography = styled(BoldTypography)(({theme}) => ({
+  color: theme.style.textHeadlineBlack
 }));
 
-export const BoldGray8Typography = styled(BoldTypography)(() => ({
-  color: '#666'
+export const Gray01Typography = styled(Typography)(({theme}) => ({
+  color: theme.style.textGray01
 }));
 
-export const Gray7Typography = styled(Typography)(() => ({
-  color: '#999'
-}));
+// export const BoldGray9Typography = styled(BoldTypography)(() => ({
+//   color: '#333'
+// }));
+
+// export const BoldGray8Typography = styled(BoldTypography)(() => ({
+//   color: '#666'
+// }));
+
+// export const Gray7Typography = styled(Typography)(() => ({
+//   color: '#999'
+// }));
 
 export const ColorInheritTypography = styled(Typography)(() => ({
   color: 'inherit'

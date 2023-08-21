@@ -216,6 +216,18 @@ export const MarginCenterBox = styled(Box)(() => ({
   margin: '0 auto'
 }));
 
+export const MainWidthCenterBox = styled(Box)(({ theme }) => ({
+  width: theme.style.SiteWidth,
+  margin: '0 auto'
+}));
+
+export const MainWidthContainerBox = styled(Box)(({ theme }) => ({
+  minWidth: theme.style.SiteWidth,
+  margin: '0 auto',
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2)
+}));
+
 export const Flex1Box = styled(Box)(() => ({
   flex: '1'
 }));

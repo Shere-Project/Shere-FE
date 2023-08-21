@@ -2,7 +2,7 @@ import { Box, IconButton, styled } from "@mui/material";
 import { ArrowUpward, Share } from "@mui/icons-material"
 
 const ButtonContainer = styled(Box)(() => ({
-  position: 'absolute',
+  position: 'fixed',
   right: 0,
   bottom: 0
 }))

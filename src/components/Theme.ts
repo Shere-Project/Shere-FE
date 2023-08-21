@@ -1,6 +1,9 @@
 import { ThemeOptions } from "@mui/material";
 
-export const LTSize = {
+export const Size = {
+  SiteWidth: '80rem',
+  HeaderHeight: '8.68rem',
+  FooterHeight: '23.25rem',
   px6: '0.375em',
   px8: '0.500em',
   px10: '0.625em',
@@ -30,15 +33,16 @@ export const LTSize = {
   px130: '8.125em'
 } as const;
 
-export const CommonStyles:any = {
-  ...LTSize,
+export const CommonStyles = {
+  ...Size,
   absolutelyWhite: '#ffffff',
   absolutelyBlack: '#000000',
   white: '#ffffff',
   black: '#000000',
-  Primary: '#1ce018',
+  Primary: '#47F1A0',
   PrimaryLight: '#d1ffd0',
   PrimaryWhite: '#f3fCf2',
+  backGroundGray: '#F6F6F6',
   textDefaultBlack: '#171717',
   textHeadlineBlack: '#161616',
   textTitleBlack: '#191919',
@@ -46,6 +50,7 @@ export const CommonStyles:any = {
 }
 
 const Theme: ThemeOptions = {
+  style: CommonStyles,
   palette: {
     primary: {
       main: CommonStyles.Primary,
@@ -55,11 +60,12 @@ const Theme: ThemeOptions = {
   typography: {
     fontFamily: "'Pretendard', 'Spoqa Han Sans Neo', 'Noto Sans KR', 'NanumBarunGothic', 'Noto Sans', 'Roboto', 'Helvetica Neue', 'sans-serif'"
   },
+  spacing: ((factor: number) => `${0.25 * factor}rem`),
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          fontSize: LTSize.px20,
+          fontSize: Size.px20,
           fontFamily: "'Pretendard', 'Spoqa Han Sans Neo', 'Noto Sans KR', 'NanumBarunGothic', 'Noto Sans', 'Roboto', 'Helvetica Neue', 'sans-serif'"      
         },
         a: {
@@ -71,7 +77,7 @@ const Theme: ThemeOptions = {
     MuiTypography: {
       defaultProps: {
         color: CommonStyles.textDefaultBlack,
-        fontSize: LTSize.px20,
+        fontSize: Size.px20,
       },
       styleOverrides: {
 

@@ -33,9 +33,7 @@ const Map: React.FC<any> = (props: any): JSX.Element => {
 
   return (
     <>
-      <h1>Naver Map test!</h1>
-      <div
-      >
+      <div>
         <div
           id='map'
           // ref={mapElement}
