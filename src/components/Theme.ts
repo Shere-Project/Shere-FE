@@ -99,6 +99,10 @@ const Theme: ThemeOptions = {
           backgroundColor: CommonStyles.Primary,
           color: CommonStyles.absolutelyWhite
         },
+        containedSecondary: {
+          backgroundColor: CommonStyles.PrimaryLight,
+          color: CommonStyles.Primary
+        },
         outlined: {}
       },
       variants: [

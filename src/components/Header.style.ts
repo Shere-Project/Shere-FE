@@ -2,11 +2,12 @@ import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
 export const HeaderBox = styled(Box)(({ theme }) => ({
-  position: 'sticky',
-  top: 0,
-  left: 0,
+  // position: 'sticky',
+  // top: 0,
+  // left: 0,
   height: theme.style.HeaderHeight,
-  zIndex: 2,
+  marginBottom: '6rem',
+  // zIndex: 2,
   whiteSpace: 'nowrap',
   overflow: 'hidden'
 }));
@@ -25,5 +26,9 @@ export const HeaderMenuContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   columnGap: 40,
-  color: theme.style.textGray01
+  color: theme.style.textGray01,
+  // '& a': {
+  //   '&:current': {
+  //   fontWeight: 'bold'
+  // }}
 }));

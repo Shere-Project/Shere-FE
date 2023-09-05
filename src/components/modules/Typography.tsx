@@ -11,8 +11,14 @@ export const BoldTypography = styled(Typography)(() => ({
   fontWeight: 600
 }));
 
+export const ExtraBoldBlackTypography = styled(Typography)(({theme}) => ({
+  color: theme.style.absolutelyBlack,
+  fontWeight: 800
+}));
+
 export const BoldGray9Typography = styled(BoldTypography)(({theme}) => ({
-  color: theme.style.textHeadlineBlack
+  color: theme.style.textHeadlineBlack,
+  fontSize: theme.style.px50
 }));
 
 export const Gray01Typography = styled(Typography)(({theme}) => ({

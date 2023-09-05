@@ -6,6 +6,9 @@ import Image from "next/image";
 import { HeaderBox, HeaderInnerBox, HeaderMenuContainer } from "./Header.style";
 
 const Header: React.FC = () => {
+
+  // const location = useLocation()
+
   return (
     <HeaderBox>
       <HeaderInnerBox>
