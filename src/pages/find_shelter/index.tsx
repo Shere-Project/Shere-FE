@@ -4,11 +4,12 @@ import React from 'react';
 import { TitleBox } from '../title.style';
 import { MainWidthCenterBox } from '@/components/modules/Box';
 import Map from '@/components/modules/Map';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab } from '@mui/material';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { SelectAddress, SelectAddressContainer } from './find_shelter.style';
-import { shelterService } from '@/api/shelter';
+import { SelectAddress, SelectAddressContainer, ShelterTableContainer } from './find_shelter.style';
+import { shelterService, TownShelters } from '@/api/shelter';
 import { RoundContainer } from '../home.style';
+import { AxiosResponse } from 'axios';
 
 export interface IAdDiv {
   id: number;
@@ -32,13 +33,13 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
     city: '',
     town: ''
   })
-
-  const [shelterList, setShelterList] = React.useState()
+  const [shelterList, setShelterList] = React.useState<TownShelters>()
 
   React.useEffect(() => {
     (async () => {
       const currentLatLng = await mapService.getCurrentLatLng()
       setCurrent(currentLatLng)
+      console.log(currentLatLng)
 
       const sidos = await mapService.getSiDos()
       setStates(sidos.data.content)
@@ -75,24 +76,39 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
     setAddress(newAddress)
   };
   const handleClickSearch = (event: React.MouseEvent) => {
+    console.log(selectedTab, address.town)
     getTownShelter(selectedTab, parseInt(address.town))
-  }
+  };
 
   const getTownShelter = async (type: string, townId: number) => {
-    let result: any;
+    let result: AxiosResponse<any, any>;
     switch (type) {
       case 'earthquake':
         result = await shelterService.getEQDong(townId, 1)
+        if (result.data) {
+          setShelterList(result.data)
+        }
+        break;
       case 'tsunami':
         result = await shelterService.getTsuDong(townId, 1)
+        if (result.data) {
+          setShelterList(result.data)
+        }
+        break;
       case 'civilDefence':
         result = await shelterService.getCDDong(townId, 1)
+        if (result.data) {
+          setShelterList(result.data)
+        }
+        break;
     }
-    // console.log(result)
-    if (result.success) {
-      setShelterList(result.data)
+  };
+
+  React.useEffect(() => {
+    if (address.town) {
+      getTownShelter(selectedTab, parseInt(address.town))
     }
-  }
+  }, [selectedTab])
 
   return (
     <MainWidthCenterBox>
@@ -110,70 +126,92 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
           지도 아이콘을 클릭하시면 지도를 통해 위치를 확인하실 수 있습니다.
         </Gray01Typography>
       </TitleBox>
-      <Box>
-        <TabContext value={selectedTab}>
-          <TabList onChange={handleChangeTab} variant='fullWidth'>
-            <Tab label='지진' value='earthquake' />
-            <Tab label='지진해일' value='tsunami' />
-            <Tab label='민방위' value='civilDefence' />
-          </TabList>
-          <TabPanel value='earthquake'>
-            지진 대피소 정보
-          </TabPanel>
-          <TabPanel value='tsunami'>
-            지진해일 대피소 정보
-          </TabPanel>
-          <TabPanel value='civilDefence'>
-            민방위 대피소 정보
-          </TabPanel>
-        </TabContext>
-        <RoundContainer my={'1.25rem'}>
-          <Map />
-        </RoundContainer>
-        <SelectAddressContainer>
-          <SelectAddress>
-            <FormControl>
-              <InputLabel>시도 선택</InputLabel>
-              <Select
-                label='시도 선택'
-                value={address.state}
-                onChange={handleChangeAddress('state')}>
-                {states?.map((state) => (
-                  <MenuItem key={`state-${state.id}`} value={state.id}>{state.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel>시군구 선택</InputLabel>
-              <Select
-                label='시군구 선택'
-                value={address.city}
-                onChange={handleChangeAddress('city')}>
-                {cities?.map((city) => (
-                  <MenuItem key={`city-${city.id}`} value={city.id}>{city.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel>읍면동 선택</InputLabel>
-              <Select
-                label='읍면동 선택'
-                value={address.town}
-                onChange={handleChangeAddress('town')}>
-                {towns?.map((town) => (
-                  <MenuItem key={`town-${town.id}`} value={town.id}>{town.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </SelectAddress>
-          <Button
-            variant='contained'
-            onClick={handleClickSearch}
-          >
-            검색
-          </Button>
-        </SelectAddressContainer>
-      </Box>
+      {/* <Box> */}
+      <TabContext value={selectedTab}>
+        <TabList onChange={handleChangeTab} variant='fullWidth'>
+          <Tab label='지진' value='earthquake' />
+          <Tab label='지진해일' value='tsunami' />
+          <Tab label='민방위' value='civilDefence' />
+        </TabList>
+      </TabContext>
+      <RoundContainer my={'1.25rem'}>
+        <Map />
+      </RoundContainer>
+      <SelectAddressContainer>
+        <SelectAddress>
+          <FormControl>
+            <InputLabel>시도 선택</InputLabel>
+            <Select
+              label='시도 선택'
+              value={address.state}
+              onChange={handleChangeAddress('state')}>
+              {states?.map((state) => (
+                <MenuItem key={`state-${state.id}`} value={state.id}>{state.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel>시군구 선택</InputLabel>
+            <Select
+              label='시군구 선택'
+              value={address.city}
+              onChange={handleChangeAddress('city')}>
+              {cities?.map((city) => (
+                <MenuItem key={`city-${city.id}`} value={city.id}>{city.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel>읍면동 선택</InputLabel>
+            <Select
+              label='읍면동 선택'
+              value={address.town}
+              onChange={handleChangeAddress('town')}>
+              {towns?.map((town) => (
+                <MenuItem key={`town-${town.id}`} value={town.id}>{town.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </SelectAddress>
+        <Button
+          variant='contained'
+          onClick={handleClickSearch}
+        >
+          검색
+        </Button>
+      </SelectAddressContainer>
+      {shelterList ?
+        <ShelterTableContainer>
+          <Typography>
+            전체 <span className='em'>{shelterList.totalCount}</span>건
+          </Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  상세주소
+                </TableCell>
+                <TableCell>
+                  시설
+                </TableCell>
+                <TableCell>
+                  수용가능면적
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {shelterList.content.map((shelter) => (
+                <TableRow key={`${selectedTab}-shelter-${shelter.id}`}>
+                  <TableCell>{shelter.fullAddress}</TableCell>
+                  <TableCell>{shelter.name}<br />{shelter.type ? `(${shelter.type})` : null}</TableCell>
+                  <TableCell>{shelter.area}m<sup>2</sup></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </ShelterTableContainer>
+        : null}
+      {/* </Box> */}
     </MainWidthCenterBox>
   )
 }

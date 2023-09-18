@@ -1,18 +1,18 @@
-import { FlexAlignItemsCenterBox, FlexSpaceBetweenCenterBox } from '@/components/modules/Box';
+import { FlexAlignItemsCenterBox, FlexSpaceBetweenCenterBox, FullWidthBox } from '@/components/modules/Box';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const SelectAddressContainer = styled(FlexSpaceBetweenCenterBox)(({ theme }) => ({
   backgroundColor: theme.style.backGroundGray,
   padding: '1.44rem 2rem',
+  borderRadius: '0.625rem',
   '& .MuiButtonBase-root': {
     width: '11.25rem',
     height: '3rem',
     fontSize: '1.25rem',
     borderRadius: '0.625rem'
   },
-  borderRadius: '0.625rem'
-}))
+}));
 
 export const SelectAddress = styled(FlexAlignItemsCenterBox)(({ theme }) => ({
   flexDirection: 'row',
@@ -29,7 +29,18 @@ export const SelectAddress = styled(FlexAlignItemsCenterBox)(({ theme }) => ({
     color: theme.style.textGray01,
     transform: 'translate(14px, 10px) scale(1)',
   },
-    '& .css-1dqdide-MuiFormLabel-root-MuiInputLabel-root.Mui-focused': {
-      color: theme.style.textGray01,
-    }
-}))
+  '& .css-1dqdide-MuiFormLabel-root-MuiInputLabel-root.Mui-focused': {
+    color: theme.style.textGray01,
+  }
+}));
+
+export const ShelterTableContainer = styled(FullWidthBox)(({ theme }) => ({
+  '& .MuiTypography-root': {
+    fontSize: '1.125rem',
+    lineHeight: '1.75rem',
+  },
+  '& .em': {
+    color: theme.style.Primary,
+    fontWeight: 600
+  },
+}));
