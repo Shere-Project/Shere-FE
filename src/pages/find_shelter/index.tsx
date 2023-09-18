@@ -10,6 +10,7 @@ import { SelectAddress, SelectAddressContainer, ShelterTableContainer } from './
 import { shelterService, TownShelters } from '@/api/shelter';
 import { RoundContainer } from '../home.style';
 import { AxiosResponse } from 'axios';
+import ShelterTable from '@/components/modules/ShelterTable';
 
 export interface IAdDiv {
   id: number;
@@ -207,30 +208,13 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
           <Typography>
             전체 <span className='em'>{shelterList.totalCount}</span>건
           </Typography>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  상세주소
-                </TableCell>
-                <TableCell>
-                  시설
-                </TableCell>
-                <TableCell>
-                  수용가능면적
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {shelterList.content.map((shelter) => (
-                <TableRow key={`${selectedTab}-shelter-${shelter.id}`}>
-                  <TableCell>{shelter.fullAddress}</TableCell>
-                  <TableCell>{shelter.name}<br />{shelter.type ? `(${shelter.type})` : null}</TableCell>
-                  <TableCell>{shelter.area}m<sup>2</sup></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {shelterList.totalCount != 0 ?
+            <ShelterTable
+              data={shelterList}
+            /> : <>
+              해당 지역에는 대피소가 존재하지 않습니다
+            </>
+          }
         </ShelterTableContainer>
         : null}
       {/* </Box> */}
