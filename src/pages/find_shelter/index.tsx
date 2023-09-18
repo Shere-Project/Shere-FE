@@ -8,6 +8,7 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEve
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { SelectAddress, SelectAddressContainer } from './find_shelter.style';
 import { shelterService } from '@/api/shelter';
+import { RoundContainer } from '../home.style';
 
 export interface IAdDiv {
   id: number;
@@ -74,7 +75,6 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
     setAddress(newAddress)
   };
   const handleClickSearch = (event: React.MouseEvent) => {
-    console.log(address.town)
     getTownShelter(selectedTab, parseInt(address.town))
   }
 
@@ -84,11 +84,14 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
       case 'earthquake':
         result = await shelterService.getEQDong(townId, 1)
       case 'tsunami':
-        // result = await shelterService.getTsuDong()
+        result = await shelterService.getTsuDong(townId, 1)
       case 'civilDefence':
-        // result = await shelterService.getCDDong()
+        result = await shelterService.getCDDong(townId, 1)
     }
-    setShelterList(result.data)
+    // console.log(result)
+    if (result.success) {
+      setShelterList(result.data)
+    }
   }
 
   return (
@@ -116,17 +119,17 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
           </TabList>
           <TabPanel value='earthquake'>
             지진 대피소 정보
-            <Map />
           </TabPanel>
           <TabPanel value='tsunami'>
             지진해일 대피소 정보
-            <Map />
           </TabPanel>
           <TabPanel value='civilDefence'>
             민방위 대피소 정보
-            <Map />
           </TabPanel>
         </TabContext>
+        <RoundContainer my={'1.25rem'}>
+          <Map />
+        </RoundContainer>
         <SelectAddressContainer>
           <SelectAddress>
             <FormControl>
