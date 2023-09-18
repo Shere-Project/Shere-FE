@@ -4,8 +4,8 @@ import React from 'react';
 import { TitleBox } from '../title.style';
 import { MainWidthCenterBox } from '@/components/modules/Box';
 import Map from '@/components/modules/Map';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Typography } from '@mui/material';
+import { TabContext, TabList } from '@mui/lab';
 import { SelectAddress, SelectAddressContainer, ShelterTableContainer } from './find_shelter.style';
 import { shelterService, TownShelters } from '@/api/shelter';
 import { RoundContainer } from '../home.style';
@@ -132,34 +132,14 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
           <Tab label='지진해일' value='tsunami' />
           <Tab label='민방위' value='civilDefence' />
         </TabList>
-        <TabPanel value='earthquake'>
-          <RoundContainer my={'1.25rem'}>
-            <Map
-              current={current}
-              type={selectedTab}
-              data={shelterList?.content}
-            />
-          </RoundContainer>
-        </TabPanel>
-        <TabPanel value='tsunami'>
-          <RoundContainer my={'1.25rem'}>
-            <Map
-              current={current}
-              type={selectedTab}
-              data={shelterList?.content}
-            />
-          </RoundContainer>
-        </TabPanel>
-        <TabPanel value='civilDefence'>
-          <RoundContainer my={'1.25rem'}>
-            <Map
-              current={current}
-              type={selectedTab}
-              data={shelterList?.content}
-            />
-          </RoundContainer>
-        </TabPanel>
       </TabContext>
+      <RoundContainer my={'1.25rem'}>
+        <Map
+          current={current}
+          type={selectedTab}
+          data={shelterList?.content}
+        />
+      </RoundContainer>
       <SelectAddressContainer>
         <SelectAddress>
           <FormControl>
