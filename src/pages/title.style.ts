@@ -12,5 +12,6 @@ export const TitleBox = styled(Box)(() => ({
     fontWeight: 500,
   },
   display: 'grid',
-  rowGap: '0.63rem'
+  rowGap: '0.63rem',
+  marginBottom: '4.87rem'
 }))

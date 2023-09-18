@@ -5,14 +5,22 @@ import { GridBox, MainWidthCenterBox } from '@/components/modules/Box';
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Skeleton, Typography } from '@mui/material';
 import Map from "../components/modules/Map";
 import { ArrowForward } from '@mui/icons-material';
+import { shelterService } from '@/api/shelter';
+import { mapService } from '@/api/map';
 
 const Home: React.FC<any> = (props: any): JSX.Element => {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<{
+    shelterCount?: number,
+    dailySearch?: number,
+    weeklySearch?: number
+  }>({
     shelterCount: undefined,
     dailySearch: undefined,
     weeklySearch: undefined
   });
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
+  const [current, setCurrent] = React.useState();
+  const [nearbyShelters, setNearbyShelters] = React.useState<Array<any>>([]);
 
   const instInfo: Array<{ imgsrc: string; title: string; desc: string; url: string; }> = [
     {
@@ -35,9 +43,29 @@ const Home: React.FC<any> = (props: any): JSX.Element => {
     }
   ];
 
+  React.useEffect(() => {
+    (async () => {
+      const counts = await shelterService.getShelterCount()
+      const totalCount = Object.values(counts.data).reduce((a, b) => a + b)
+      if (totalCount) setStats({ ...stats, shelterCount: totalCount })
+
+      const currentLatLng = await mapService.getCurrentLatLng()
+      setCurrent(currentLatLng)
+    })();
+  }, []);
+
+  React.useEffect(() => {
+    (async () => {
+      if (current) {
+        const result = await shelterService.getShelterCurrent(current)
+        setNearbyShelters(result.data.content)
+        setIsLoading(false);
+      }
+    })();
+  }, [current])
+
   return (
     <>
-      {/* <Map /> */}
       <MainWidthCenterBox>
         <IntroBox>
           <BoldGray9Typography className='title'>
@@ -56,13 +84,15 @@ const Home: React.FC<any> = (props: any): JSX.Element => {
           </Button>
         </IntroBox>
         <RoundContainer>
-          <Map />
+          <Map currentLatLng={current} />
         </RoundContainer>
         <SummaryBox>
           <RoundContainer
             sx={{
               paddingY: '6.31rem',
               backgroundImage: `url(img/img02.jpg)`,
+              backgroundSize: '100%',
+              // backgroundPosition: 'center',
               textAlign: 'center'
             }}
           >
@@ -87,11 +117,26 @@ const Home: React.FC<any> = (props: any): JSX.Element => {
             gridTemplateColumns={'repeat(5, 1fr)'}
             columnGap='2.5rem'
           >
-            {isLoading ? <Box>
-              <Skeleton animation="wave" height='14rem' />
+            {isLoading || !nearbyShelters.length ? <Box>
+              <Skeleton animation="wave" height='14rem' width='14rem' />
               <Skeleton animation="wave" height='1.4rem' />
               <Skeleton animation="wave" height='1.4rem' width='30%' />
-            </Box> : <></>}
+            </Box> : <>
+              {nearbyShelters.map((shelter: any, idx: number) =>
+                <Box
+                  textAlign={'start'}
+                  key={`nearby-shelter-${idx}`}
+                >
+                  <Skeleton animation="wave" height='14rem' width='14rem' />
+                  <Gray01Typography className='desc' mb='0.44rem'>
+                    {shelter.name}
+                  </Gray01Typography>
+                  <BoldGray9Typography className='desc'>
+                    {shelter.distance}m
+                  </BoldGray9Typography>
+                </Box>
+              )}
+            </>}
           </GridBox>
         </SummaryBox>
         <SummaryBox>

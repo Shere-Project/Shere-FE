@@ -1,29 +1,95 @@
 import { mapService } from '@/api/map';
-import { shelterService } from '@/api/shelter';
-import { BoldGray9Typography, ExtraBoldBlackTypography, Gray01Typography } from '@/components/modules/Typography';
+import { BoldGray9Typography, Gray01Typography } from '@/components/modules/Typography';
 import React from 'react';
 import { TitleBox } from '../title.style';
 import { MainWidthCenterBox } from '@/components/modules/Box';
+import Map from '@/components/modules/Map';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab } from '@mui/material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { SelectAddress, SelectAddressContainer } from './find_shelter.style';
+import { shelterService } from '@/api/shelter';
+
+export interface IAdDiv {
+  id: number;
+  name: string;
+}
+interface IAddress {
+  state: string
+  city: string
+  town: string
+}
 
 const Shelter: React.FC<any> = (props: any): JSX.Element => {
   const [current, setCurrent] = React.useState()
-  const [nearbyShelters, setNearbyShelters] = React.useState<Array<any>>()
+  const [selectedTab, setSelectedTab] = React.useState('earthquake')
+
+  const [states, setStates] = React.useState<Array<IAdDiv>>()
+  const [cities, setCities] = React.useState<Array<IAdDiv>>()
+  const [towns, setTowns] = React.useState<Array<IAdDiv>>()
+  const [address, setAddress] = React.useState<IAddress>({
+    state: '',
+    city: '',
+    town: ''
+  })
+
+  const [shelterList, setShelterList] = React.useState()
 
   React.useEffect(() => {
     (async () => {
       const currentLatLng = await mapService.getCurrentLatLng()
       setCurrent(currentLatLng)
+
+      const sidos = await mapService.getSiDos()
+      setStates(sidos.data.content)
     })();
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     (async () => {
-      if (current) {
-        const result = await shelterService.getShelterCurrent(current)
-        setNearbyShelters(result.data?.content)
-      }
+      if (address.state) {
+        const cityResult = await mapService.getSiGunGus(parseInt(address.state))
+        setCities(cityResult.data.content)
+      };
+      if (address.city) {
+        const townResult = await mapService.getMyeonDongs(parseInt(address.city))
+        setTowns(townResult.data.content)
+      };
     })();
-  }, [current])
+  }, [address])
+
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
+    setSelectedTab(newValue);
+  };
+  const handleChangeAddress = (prop: keyof IAddress) => (event: SelectChangeEvent) => {
+    let newAddress = { ...address }
+    switch (prop) {
+      case 'state':
+        newAddress.city = '';
+        newAddress.town = '';
+        break;
+      case 'city':
+        newAddress.town = '';
+    }
+    newAddress[prop] = event.target.value
+    setAddress(newAddress)
+  };
+  const handleClickSearch = (event: React.MouseEvent) => {
+    console.log(address.town)
+    getTownShelter(selectedTab, parseInt(address.town))
+  }
+
+  const getTownShelter = async (type: string, townId: number) => {
+    let result: any;
+    switch (type) {
+      case 'earthquake':
+        result = await shelterService.getEQDong(townId, 1)
+      case 'tsunami':
+        // result = await shelterService.getTsuDong()
+      case 'civilDefence':
+        // result = await shelterService.getCDDong()
+    }
+    setShelterList(result.data)
+  }
 
   return (
     <MainWidthCenterBox>
@@ -41,8 +107,70 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
           지도 아이콘을 클릭하시면 지도를 통해 위치를 확인하실 수 있습니다.
         </Gray01Typography>
       </TitleBox>
-      {/* {JSON.stringify(current)}
-      {JSON.stringify(nearbyShelters)} */}
+      <Box>
+        <TabContext value={selectedTab}>
+          <TabList onChange={handleChangeTab} variant='fullWidth'>
+            <Tab label='지진' value='earthquake' />
+            <Tab label='지진해일' value='tsunami' />
+            <Tab label='민방위' value='civilDefence' />
+          </TabList>
+          <TabPanel value='earthquake'>
+            지진 대피소 정보
+            <Map />
+          </TabPanel>
+          <TabPanel value='tsunami'>
+            지진해일 대피소 정보
+            <Map />
+          </TabPanel>
+          <TabPanel value='civilDefence'>
+            민방위 대피소 정보
+            <Map />
+          </TabPanel>
+        </TabContext>
+        <SelectAddressContainer>
+          <SelectAddress>
+            <FormControl>
+              <InputLabel>시도 선택</InputLabel>
+              <Select
+                label='시도 선택'
+                value={address.state}
+                onChange={handleChangeAddress('state')}>
+                {states?.map((state) => (
+                  <MenuItem key={`state-${state.id}`} value={state.id}>{state.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>시군구 선택</InputLabel>
+              <Select
+                label='시군구 선택'
+                value={address.city}
+                onChange={handleChangeAddress('city')}>
+                {cities?.map((city) => (
+                  <MenuItem key={`city-${city.id}`} value={city.id}>{city.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>읍면동 선택</InputLabel>
+              <Select
+                label='읍면동 선택'
+                value={address.town}
+                onChange={handleChangeAddress('town')}>
+                {towns?.map((town) => (
+                  <MenuItem key={`town-${town.id}`} value={town.id}>{town.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </SelectAddress>
+          <Button
+            variant='contained'
+            onClick={handleClickSearch}
+          >
+            검색
+          </Button>
+        </SelectAddressContainer>
+      </Box>
     </MainWidthCenterBox>
   )
 }
