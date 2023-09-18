@@ -1,66 +1,66 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import { Box } from '@mui/material';
+import { TownShelters } from '@/api/shelter';
 
+interface MapProps {
+  current?: { latitude: number; longitude: number }
+  type?: string
+  data?: Array<any>
+}
 
-const Map: React.FC<any> = (props: any): JSX.Element => {
-  // const router = useRouter();
-  const [current, setCurrent] = React.useState<any>();
+const Map: React.FC<MapProps> = ({
+  current,
+  type,
+  data
+}): JSX.Element => {
+  const [location, setLocation] = React.useState<naver.maps.LatLng | undefined>()
 
-  // React.useEffect(() => {
-  //   console.log(current)
-  // }, [current])
+  const mapRef = React.useRef<HTMLElement | null | any>(null);
+  const markerRef = React.useRef<any | null>(null);
+  let markers: Array<any> | undefined = [];
 
   React.useEffect(() => {
-    (async () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          setCurrent(position.coords)
-        });
-      }
-      else {
-        console.log("Geolocation Not supported Required");
-      }
+    const location = data?.length ?
+      new naver.maps.LatLng(data[0].latitude, data[0].longitude)
+      : current ?
+        new naver.maps.LatLng(current.latitude, current.longitude)
+        : new naver.maps.LatLng(37.5666103, 126.9783882)
 
-      // const current = props.current
+    const mapDiv = document.getElementById('map')
+    const mapOptions = {
+      center: location
+    }
+    if (!mapDiv) return;
+    mapRef.current = new window.naver.maps.Map(mapDiv, mapOptions)
 
-      const mapDiv = document.getElementById('map')
-      const mapOptions = {
-        center: current ? new naver.maps.LatLng(current.latitude, current.longitude) : new naver.maps.LatLng(37.5666103, 126.9783882)
-      }
-      if (!mapDiv) return;
-      const map = new window.naver.maps.Map(mapDiv, mapOptions)
+    // markers?.forEach(marker => marker.setMap(null))
+    // markers = data?.map((shelter: any) => {
+    //   markerRef.current = new naver.maps.Marker({
+    //     position: new naver.maps.LatLng(shelter.latitude, shelter.longitude),
+    //     map: mapRef.current
+    //   })
+    // })
+  }, [mapRef, current, data]);
 
-    })();
-    // const mapDiv = React.useRef(null);
-    // const { naver } = window;
-    // if (!mapDiv.current || !naver) return;
-
-    // // 지도에 표시할 위치의 위도와 경도 좌표를 파라미터로 넣어줍니다.
-    // const location = new naver.maps.LatLng(37.5656, 126.9769);
-    // const mapOptions: naver.maps.MapOptions = {
-    //   center: location,
-    //   zoom: 17,
-    //   zoomControl: true,
-    //   zoomControlOptions: {
-    //     position: naver.maps.Position.TOP_RIGHT,
-    //   },
-    // };
-    // const map = new naver.maps.Map(mapDiv.current, mapOptions);
-    // new naver.maps.Marker({
-    //   position: location,
-    //   map,
-    // });
-  }, []);
+  React.useEffect(() => {
+    markers?.forEach(marker => marker.setMap(null))
+    markers = data?.map((shelter: any) => {
+      markerRef.current = new naver.maps.Marker({
+        position: new naver.maps.LatLng(shelter.latitude, shelter.longitude),
+        map: mapRef.current
+      })
+    })
+  }, [mapRef, data])
 
   return (
     <>
-      <div>
-        <div
+      <Box>
+        <Box
           id='map'
-          // ref={mapElement}
+          ref={mapRef}
           style={{ minHeight: '400px' }}
         />
-      </div>
+      </Box>
     </>
   );
 };

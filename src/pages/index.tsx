@@ -84,7 +84,10 @@ const Home: React.FC<any> = (props: any): JSX.Element => {
           </Button>
         </IntroBox>
         <RoundContainer>
-          <Map currentLatLng={current} />
+          <Map
+            current={current}
+            data={nearbyShelters}
+          />
         </RoundContainer>
         <SummaryBox>
           <RoundContainer

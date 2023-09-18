@@ -39,7 +39,6 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
     (async () => {
       const currentLatLng = await mapService.getCurrentLatLng()
       setCurrent(currentLatLng)
-      console.log(currentLatLng)
 
       const sidos = await mapService.getSiDos()
       setStates(sidos.data.content)
@@ -76,7 +75,6 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
     setAddress(newAddress)
   };
   const handleClickSearch = (event: React.MouseEvent) => {
-    console.log(selectedTab, address.town)
     getTownShelter(selectedTab, parseInt(address.town))
   };
 
@@ -133,10 +131,34 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
           <Tab label='지진해일' value='tsunami' />
           <Tab label='민방위' value='civilDefence' />
         </TabList>
+        <TabPanel value='earthquake'>
+          <RoundContainer my={'1.25rem'}>
+            <Map
+              current={current}
+              type={selectedTab}
+              data={shelterList?.content}
+            />
+          </RoundContainer>
+        </TabPanel>
+        <TabPanel value='tsunami'>
+          <RoundContainer my={'1.25rem'}>
+            <Map
+              current={current}
+              type={selectedTab}
+              data={shelterList?.content}
+            />
+          </RoundContainer>
+        </TabPanel>
+        <TabPanel value='civilDefence'>
+          <RoundContainer my={'1.25rem'}>
+            <Map
+              current={current}
+              type={selectedTab}
+              data={shelterList?.content}
+            />
+          </RoundContainer>
+        </TabPanel>
       </TabContext>
-      <RoundContainer my={'1.25rem'}>
-        <Map />
-      </RoundContainer>
       <SelectAddressContainer>
         <SelectAddress>
           <FormControl>
