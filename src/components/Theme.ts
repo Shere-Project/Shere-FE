@@ -114,6 +114,33 @@ const Theme: ThemeOptions = {
           }
         },
       ]
+    },
+    MuiTableHead: {
+      defaultProps: {
+        style: {
+          borderTop: `2px solid ${CommonStyles.Primary}`,
+        }
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          fontSize: '1.125rem'
+        },
+        head: {
+          textAlign: 'center',
+          color: CommonStyles.black
+        },
+        body: {
+          color: CommonStyles.textDefaultBlack
+        },
+        footer: {
+          border: 'none',
+          '&.disabled': {
+            color: CommonStyles.textGray01
+          }
+        }
+      }
     }
   }
 }
