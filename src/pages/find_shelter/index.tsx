@@ -11,6 +11,7 @@ import { shelterService, TownShelters } from '@/api/shelter';
 import { RoundContainer } from '../home.style';
 import { AxiosResponse } from 'axios';
 import ShelterTable from '@/components/modules/ShelterTable';
+import { isVariableDeclaration } from 'typescript';
 
 export interface IAdDiv {
   id: number;
@@ -76,26 +77,26 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
     setAddress(newAddress)
   };
   const handleClickSearch = (event: React.MouseEvent) => {
-    getTownShelter(selectedTab, parseInt(address.town))
+    getTownShelter(selectedTab, parseInt(address.town), 1)
   };
 
-  const getTownShelter = async (type: string, townId: number) => {
+  const getTownShelter = async (type: string, townId: number, page: number) => {
     let result: AxiosResponse<any, any>;
     switch (type) {
       case 'earthquake':
-        result = await shelterService.getEQDong(townId, 1)
+        result = await shelterService.getEQDong(townId, page)
         if (result.data) {
           setShelterList(result.data)
         }
         break;
       case 'tsunami':
-        result = await shelterService.getTsuDong(townId, 1)
+        result = await shelterService.getTsuDong(townId, page)
         if (result.data) {
           setShelterList(result.data)
         }
         break;
       case 'civilDefence':
-        result = await shelterService.getCDDong(townId, 1)
+        result = await shelterService.getCDDong(townId, page)
         if (result.data) {
           setShelterList(result.data)
         }
@@ -105,9 +106,22 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
 
   React.useEffect(() => {
     if (address.town) {
-      getTownShelter(selectedTab, parseInt(address.town))
+      getTownShelter(selectedTab, parseInt(address.town), 1)
     }
   }, [selectedTab])
+
+  const handleChangePage = (variant: 'prev' | 'next') => {
+    switch (variant) {
+      case 'prev':
+        if (!address.town || !shelterList?.hasPrevious) return
+        getTownShelter(selectedTab, parseInt(address.town), shelterList.page - 1);
+        break;
+      case 'next':
+        if (!address.town || !shelterList?.hasNext) return
+        getTownShelter(selectedTab, parseInt(address.town), shelterList.page + 1);
+        break;
+    }
+  }
 
   return (
     <MainWidthCenterBox>
@@ -191,6 +205,7 @@ const Shelter: React.FC<any> = (props: any): JSX.Element => {
           {shelterList.totalCount != 0 ?
             <ShelterTable
               data={shelterList}
+              ChangePage={handleChangePage}
             /> : <>
               해당 지역에는 대피소가 존재하지 않습니다
             </>

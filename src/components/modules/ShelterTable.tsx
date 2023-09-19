@@ -1,13 +1,23 @@
 import { TownShelters } from "@/api/shelter";
-import { TableHead, TableRow, TableCell, TableBody, Table } from "@mui/material";
+import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
+import { TableHead, TableRow, TableCell, TableBody, Table, TablePagination, TableFooter, Box, IconButton } from "@mui/material";
+import React from "react";
+import { FlexAlignItemsCenterBox, TextAlignCenterBox } from "./Box";
 
 interface ShelterTableProps {
   data: TownShelters
+  ChangePage: (variant: 'prev' | 'next') => void
 }
 
 const ShelterTable: React.FC<ShelterTableProps> = ({
-  data
+  data,
+  ChangePage
 }) => {
+  // const [page, setPage] = React.useState(data.page);
+  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const handleChangePage = (variant: 'prev' | 'next') => (event: React.MouseEvent) => {
+    ChangePage(variant)
+  }
   return <Table>
     <TableHead>
       <TableRow>
@@ -31,6 +41,25 @@ const ShelterTable: React.FC<ShelterTableProps> = ({
         </TableRow>
       ))}
     </TableBody>
+    <TableFooter>
+      <TableRow>
+      {/* <TablePagination
+          count={data.totalCount}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+        /> */}
+      <TableCell colSpan={10} sx={{textAlign: 'end'}}>
+          <IconButton onClick={handleChangePage('prev')}>
+            <ChevronLeftRounded />
+          </IconButton>
+          {data.page} / {data.totalPage}
+          <IconButton onClick={handleChangePage('next')}>
+            <ChevronRightRounded />
+          </IconButton>
+      </TableCell>
+      </TableRow>
+    </TableFooter>
   </Table>
 };
 
