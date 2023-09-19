@@ -7,6 +7,7 @@ import Map from "../components/modules/Map";
 import { ArrowForward } from '@mui/icons-material';
 import { shelterService } from '@/api/shelter';
 import { mapService } from '@/api/map';
+import { statisticsService } from '@/api/statistics';
 
 const Home: React.FC<any> = (props: any): JSX.Element => {
   const [stats, setStats] = useState<{
@@ -47,7 +48,12 @@ const Home: React.FC<any> = (props: any): JSX.Element => {
     (async () => {
       const counts = await shelterService.getShelterCount()
       const totalCount = Object.values(counts.data).reduce((a, b) => a + b)
+      const dailyCount = await statisticsService.getDailyTotal()
+      const weeklyCount = await statisticsService.getWeeklyTotal()
+
       if (totalCount) setStats({ ...stats, shelterCount: totalCount })
+      if (dailyCount.data) setStats({ ...stats, dailySearch: dailyCount.data.totalCount })
+      if (weeklyCount.data) setStats({ ...stats, weeklySearch: weeklyCount.data.totalCount })
 
       const currentLatLng = await mapService.getCurrentLatLng()
       setCurrent(currentLatLng)

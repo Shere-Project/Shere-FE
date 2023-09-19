@@ -27,8 +27,8 @@ export const HeaderMenuContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   columnGap: 40,
   color: theme.style.textGray01,
-  // '& a': {
-  //   '&:current': {
-  //   fontWeight: 'bold'
-  // }}
+  '& a.active': {
+    color: theme.style.textHeadlineBlack,
+    fontWeight: 600
+  }
 }));
