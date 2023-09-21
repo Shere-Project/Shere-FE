@@ -1,9 +1,32 @@
-import { MainWidthCenterBox } from '@/components/modules/Box';
+import { FlexEndEndBox, FlexSpaceBetweenBox, MainWidthCenterBox } from '@/components/modules/Box';
 import { BoldGray9Typography, Gray01Typography } from '@/components/modules/Typography';
 import React from 'react';
 import { TitleBox } from '../title.style';
+import { useRouter } from 'next/router';
+import { newsService } from '@/api/news';
+import { Button, Table, TableBody, TableCell, TableFooter, TableHead, TableRow } from '@mui/material';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import Link from 'next/link';
 
 const NewsContent: React.FC<any> = (props: any): JSX.Element => {
+  const router = useRouter()
+  const newsId = Number(router.query.newsId)
+  const [news, setNews] = React.useState<any>()
+  const [prev, setPrev] = React.useState<any>({ id: 0, title: '' })
+  const [next, setNext] = React.useState<any>({ id: 0, title: '' })
+
+  React.useEffect(() => {
+    (async () => {
+      const newsRes = await newsService.getNewsContent(newsId).then(res => res.data);
+      const prevRes = await newsService.getPrevNews(newsId).then(res => res.data)
+      const nextRes = await newsService.getNextNews(newsId).then(res => res.data)
+
+      if (newsRes) setNews(newsRes)
+      if (prevRes) setPrev(prevRes)
+      if (nextRes) setNext(nextRes)
+    })()
+  }, [newsId])
+
   return (
     <MainWidthCenterBox>
       <TitleBox>
@@ -11,6 +34,72 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
           안전뉴스
         </BoldGray9Typography>
       </TitleBox>
+      {news ?
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell colSpan={100}>
+                {news.title}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                작성자: {news.writer}
+              </TableCell>
+              <TableCell>
+                작성일: {news.publishDate}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell
+                colSpan={100}
+                dangerouslySetInnerHTML={{ __html: news.content }}
+              />
+            </TableRow>
+            {prev.id != 0 ?
+              <TableRow>
+                <TableCell>
+                  <FlexSpaceBetweenBox>
+                    이전글
+                    <KeyboardArrowUp />
+                  </FlexSpaceBetweenBox>
+                </TableCell>
+                <TableCell>
+                  <Link href={`/news/${Number(prev.id)}`}>
+                    {prev.title}
+                  </Link>
+                </TableCell>
+              </TableRow>
+              : null}
+            {next.id != 0 ?
+              <TableRow>
+                <TableCell>
+                  <FlexSpaceBetweenBox>
+                    다음글
+                    <KeyboardArrowDown />
+                  </FlexSpaceBetweenBox>
+                </TableCell>
+                <TableCell>
+                  <Link href={`/news/${Number(next.id)}`}>
+                    {next.title}
+                  </Link>
+                </TableCell>
+              </TableRow>
+              : null}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell>
+                <Button variant='outlined' href='/news'>
+                  목차
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+        : null}
     </MainWidthCenterBox>
   )
 }

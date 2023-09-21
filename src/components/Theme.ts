@@ -125,7 +125,8 @@ const Theme: ThemeOptions = {
     MuiTableCell: {
       styleOverrides: {
         root: {
-          fontSize: '1.125rem'
+          fontSize: '1.125rem',
+          borderBottom: `1px solid ${CommonStyles.black}`
         },
         head: {
           textAlign: 'center',
@@ -136,6 +137,7 @@ const Theme: ThemeOptions = {
         },
         footer: {
           border: 'none',
+          textAlign: 'end',
           '&.disabled': {
             color: CommonStyles.textGray01
           }
