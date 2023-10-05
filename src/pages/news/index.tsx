@@ -9,7 +9,6 @@ import Link from 'next/link';
 
 const News: React.FC<any> = (props: any): JSX.Element => {
   const [newsData, setNewsData] = React.useState<any>()
-  const [page, setPage] = React.useState<number>(1)
 
   React.useEffect(() => {
     getNewsList(1)

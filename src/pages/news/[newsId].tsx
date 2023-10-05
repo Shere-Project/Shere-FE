@@ -1,5 +1,5 @@
-import { FlexEndEndBox, FlexSpaceBetweenBox, MainWidthCenterBox } from '@/components/modules/Box';
-import { BoldGray9Typography, Gray01Typography } from '@/components/modules/Typography';
+import { FlexSpaceBetweenBox, MainWidthCenterBox } from '@/components/modules/Box';
+import { BoldGray9Typography } from '@/components/modules/Typography';
 import React from 'react';
 import { TitleBox } from '../title.style';
 import { useRouter } from 'next/router';
@@ -38,17 +38,17 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell colSpan={100}>
+              <TableCell colSpan={100} sx={{textAlign: 'left'}}>
                 {news.title}
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>
+              <TableCell colSpan={2}>
                 작성자: {news.writer}
               </TableCell>
-              <TableCell>
+              <TableCell width={'50%'}>
                 작성일: {news.publishDate}
               </TableCell>
             </TableRow>
@@ -60,13 +60,13 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
             </TableRow>
             {prev.id != 0 ?
               <TableRow>
-                <TableCell>
+                <TableCell width={'15%'}>
                   <FlexSpaceBetweenBox>
                     이전글
                     <KeyboardArrowUp />
                   </FlexSpaceBetweenBox>
                 </TableCell>
-                <TableCell>
+                <TableCell colSpan={2}>
                   <Link href={`/news/${Number(prev.id)}`}>
                     {prev.title}
                   </Link>
@@ -81,7 +81,7 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
                     <KeyboardArrowDown />
                   </FlexSpaceBetweenBox>
                 </TableCell>
-                <TableCell>
+                <TableCell colSpan={2}>
                   <Link href={`/news/${Number(next.id)}`}>
                     {next.title}
                   </Link>
@@ -91,7 +91,7 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell>
+              <TableCell colSpan={100}>
                 <Button variant='outlined' href='/news'>
                   목차
                 </Button>

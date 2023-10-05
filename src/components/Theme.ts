@@ -107,10 +107,18 @@ const Theme: ThemeOptions = {
       },
       variants: [
         {
-          props: { variant: 'outlined', color: 'primary' },
+          props: { variant: 'outlined'},
           style: {
-            border: 'none',
-            backgroundColor: CommonStyles.absolutelyWhite
+            borderColor: CommonStyles.textGray01,
+            color: CommonStyles.textGray01,
+            backgroundColor: CommonStyles.absolutelyWhite,
+            borderRadius: '10px',
+            padding: '.31rem 1.75rem',
+            ':hover': {
+              borderColor: CommonStyles.textDefaultBlack,
+              color: CommonStyles.textDefaultBlack,
+              backgroundColor: CommonStyles.absolutelyWhite,
+            }
           }
         },
       ]
@@ -126,7 +134,9 @@ const Theme: ThemeOptions = {
       styleOverrides: {
         root: {
           fontSize: '1.125rem',
-          borderBottom: `1px solid ${CommonStyles.black}`
+          borderBottom: `1px solid ${CommonStyles.black}`,
+          paddingTop: '2rem',
+          paddingBottom: '2rem',
         },
         head: {
           textAlign: 'center',
