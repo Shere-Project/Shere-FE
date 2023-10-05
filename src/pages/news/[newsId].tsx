@@ -1,6 +1,7 @@
 import { FlexSpaceBetweenBox, MainWidthCenterBox } from '@/components/modules/Box';
 import { BoldGray9Typography } from '@/components/modules/Typography';
 import React from 'react';
+import dompurify from 'dompurify';
 import { TitleBox } from '../title.style';
 import { useRouter } from 'next/router';
 import { newsService } from '@/api/news';
@@ -27,6 +28,16 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
     })()
   }, [newsId])
 
+  const newsContent = (content: any) => {
+    const sanitizer = dompurify.sanitize;
+    return (
+      <TableCell
+        colSpan={100}
+        dangerouslySetInnerHTML={{ __html: sanitizer(content) }}
+      />
+    )
+  }
+
   return (
     <MainWidthCenterBox>
       <TitleBox>
@@ -38,7 +49,7 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell colSpan={100} sx={{textAlign: 'left'}}>
+              <TableCell colSpan={100} sx={{ textAlign: 'left' }}>
                 {news.title}
               </TableCell>
             </TableRow>
@@ -53,10 +64,7 @@ const NewsContent: React.FC<any> = (props: any): JSX.Element => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell
-                colSpan={100}
-                dangerouslySetInnerHTML={{ __html: news.content }}
-              />
+              {newsContent(news.content)}
             </TableRow>
             {prev.id != 0 ?
               <TableRow>
